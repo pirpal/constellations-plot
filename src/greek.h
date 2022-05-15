@@ -2,25 +2,12 @@
 #define GREEK_H_
 
 typedef enum GreekLetter {
-  Alp, Bet, Gam, Del, Eps, Zet,
-  Eta, The, Iot, Kap, Lam, Mu,
-  Nu,  Xi,  Omi, Pi,  Rho, Sig,
-  Tau, Ups, Phi, Chi, Psi, Ome 
+  ALPHA, BETA, GAMMA, DELTA, EPSILON, ZETA,
+  ETA, THETA, IOTA, KAPPA, LAMBDA, MU,
+  NU, XI, OMICRON, PI,  RHO, SIGMA,
+  TAU, UPSILON, PHI, CHI, PSI, OMEGA 
 } GreekLetter;
-
-const char* GREEK_LETTERS[] = {
-  "Alpha", "Beta",    "Gamma",   "Delta", "Epsilon", "Zeta",
-  "Eta",   "Theta",   "Iota",    "Kappa", "Lambda",  "Mu",
-  "Nu",    "Xi",      "Omicron", "Pi",    "Rho",     "Sigma",
-  "Tau",   "Upsilon", "Phi",     "Chi",   "Psi",     "Omega"
-};
-
-const char* GREEK_LETTERS_SHORT[] = {
-  "Alp", "Bet", "Gam", "Del", "Eps", "Zet",
-  "Eta", "The", "Iot", "Kap", "Lam", "Mu",
-  "Nu",  "Xi",  "Omi", "Pi",  "Rho", "Sig",
-  "Tau", "Ups", "Phi", "Chi", "Psi", "Ome"
-};
+#define MAX_LETTER OMEGA // 23 (24 letters)
 
 
 #define U_ALPHA   "\U000003b1" // α  A
