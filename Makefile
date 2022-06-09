@@ -40,13 +40,6 @@ TEST_OBJ = $(subst $(OBJ_DIR)/main.o,,$(OBJ))
 # Tests executables
 TEST_BIN = $(patsubst $(TEST_DIR)/%.c, $(TEST_BIN_DIR)/%, $(TESTS))
 
-# LINKS ---------------
-
-
-
-
-
-
 # COMMANDS -------------------------- 
 # [make] General compilation command
 all: $(BIN)
