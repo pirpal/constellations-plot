@@ -1,1 +1,4 @@
-Constellations Plot\n
+Constellations Plot
+----------------------
+
+

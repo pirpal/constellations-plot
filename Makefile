@@ -1,6 +1,5 @@
 # C compiler
-#CC = gcc
-CC = clang
+CC = gcc
 
 # Flags
 CFLAGS = -g -Wall -Wextra --std=c11 -pedantic

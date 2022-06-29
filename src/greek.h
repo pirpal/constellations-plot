@@ -5,13 +5,13 @@ typedef enum GreekLetter {
   ALPHA, BETA, GAMMA, DELTA, EPSILON, ZETA,
   ETA, THETA, IOTA, KAPPA, LAMBDA, MU,
   NU, XI, OMICRON, PI,  RHO, SIGMA,
-  TAU, UPSILON, PHI, CHI, PSI, OMEGA, LETTER_ERR
+  TAU, UPSILON, PHI, CHI, PSI, OMEGA
 } GreekLetter;
 #define MAX_LETTER OMEGA // 23 (24 letters)
 
-
-#define U_ALPHA   "\U000003b1" // α  A
-#define U_BETA    "\U000003b2" // β  B
+// Unicode Greek small letters
+#define U_ALPHA   "\U000003b1" // α  A  Keyboard input for Emacs
+#define U_BETA    "\U000003b2" // β  B  (`M-x set-input-method greek`)
 #define U_GAMMA   "\U000003b3" // γ  G
 #define U_DELTA   "\U000003b4" // δ  D
 #define U_EPSILON "\U000003b5" // ε  E
@@ -31,8 +31,8 @@ typedef enum GreekLetter {
 #define U_SIGMA   "\U000003c3" // σ  S
 #define U_TAU     "\U000003c4" // τ  T
 #define U_UPSILON "\U000003c5" // υ  Y
-#define U_PHI     "\U000003c6" // φ  F 
-#define U_CHI     "\U000003c7" // χ  X 
+#define U_PHI     "\U000003c6" // φ  F
+#define U_CHI     "\U000003c7" // χ  X
 #define U_PSI     "\U000003c8" // ψ  C
 #define U_OMEGA   "\U000003c9" // ω  V
 

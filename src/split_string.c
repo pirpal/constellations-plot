@@ -1,13 +1,15 @@
-#include "csv-parsing.h"
+#include "split_string.h"
 
-
-void err_exit(const char *msg) {
+//----------------------------------------------------------------
+// § Static functions
+//----------------------------------------------------------------
+static void err_exit(const char *msg) {
   /* Generic exit on failure function */
   fprintf(stderr, "[ERR] %s\n", msg);
   exit(EXIT_FAILURE);
 }
 
-uint16_t count_sep(const char *str, const char sep) {
+static uint16_t count_sep(const char *str, const char sep) {
   /* Returns nb of SEP delimiters in STR */
   uint16_t count = 0;
   for (uint16_t i = 0; i < strlen(str); ++i) {
@@ -17,7 +19,7 @@ uint16_t count_sep(const char *str, const char sep) {
   return count;
 }
 
-uint16_t *sep_indexes(const char *str, const char sep) {
+static uint16_t *sep_indexes(const char *str, const char sep) {
   /* Returns array of positions of SEP delimiter in STR */
   uint16_t sep_nb = count_sep(str, sep);
   uint16_t *indexes = malloc(sep_nb * sizeof(uint16_t));
@@ -34,7 +36,7 @@ uint16_t *sep_indexes(const char *str, const char sep) {
   return indexes;
 }
 
-uint16_t *tokens_lengths(const char *str, const char sep) {
+static uint16_t *tokens_lengths(const char *str, const char sep) {
   /* Returns array of STR tokens's lengths */
   uint16_t sep_nb = count_sep(str, sep);
   uint16_t tok_nb = sep_nb + 1;
@@ -55,7 +57,18 @@ uint16_t *tokens_lengths(const char *str, const char sep) {
   return lengths;
 }
 
-char **split_csv_line(const char *str, const char sep) {
+//----------------------------------------------------------------
+// § External functions: new_split, free_split
+//----------------------------------------------------------------
+
+uint16_t tokens_nb(const char *str, const char sep) {
+  /* Returns number of tokens separated by SEP in STR */
+  uint16_t sep_nb = count_sep(str, sep);
+  return sep_nb + 1;
+}
+
+
+char **new_split(const char *str, const char sep) {
   /* Returns array of STR's string tokens */
   uint16_t sep_nb = count_sep(str, sep);
   uint16_t tok_nb = sep_nb + 1;
@@ -94,3 +107,9 @@ void free_split(char **split, uint16_t tok_nb) {
   free(split);
 }
 
+
+void log_split(FILE *stream, char **split, uint16_t tok_nb) {
+  for (uint16_t i = 0; i < tok_nb; ++i) {
+    fprintf(stream, "[%d] '%s'\n", i, split[i]);
+  }
+}
