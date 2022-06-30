@@ -12,8 +12,8 @@ TEST_DIR     = tests
 TEST_BIN_DIR = $(TEST_DIR)/bin
 
 # SDL2 links
-SDL_LIBS     = $(shell pkg-config --libs sdl2)
-SDL_FLAGS    = $(shell pkg-config --cflags sdl2)
+#SDL_LIBS     = $(shell pkg-config --libs sdl2)
+#SDL_FLAGS    = $(shell pkg-config --cflags sdl2)
 
 # Test framework link
 CRITERION = -lcriterion
@@ -33,7 +33,7 @@ OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 # Tests source files
 TESTS = $(wildcard $(TEST_DIR)/*.c)
 
-# Tests object files (exclude main.c from test objects)
+# Tests object files (exclude main.o from test objects)
 TEST_OBJ = $(subst $(OBJ_DIR)/main.o,,$(OBJ))
 
 # Tests executables
@@ -45,15 +45,15 @@ all: $(BIN)
 
 # Executable linkage from object files
 $(BIN): $(OBJ)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(MATH)
 
 # Objects separated compilation
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ $(MATH)
 
 # Tests executables linkage
 $(TEST_BIN_DIR)/%: $(TEST_DIR)/%.c
-	$(CC) $(CFLAGS) $< $(TEST_OBJ) -o $@ $(CRITERION)
+	$(CC) $(CFLAGS) $< $(TEST_OBJ) -o $@ $(CRITERION) $(MATH)
 
 # [make test] Compile and run tests
 test: $(TEST_BIN)

@@ -44,5 +44,37 @@ Test(astro_maths_tests, test_hms_to_deg) {
   cr_expect(hms_to_degrees(&hms2) - expected2 < FLOAT_PT_TOLERANCE);
 }
 
+Test(astro_maths_tests, test_degrees_to_hms) {
+  /*
+    RA values are taken from the db
+    Expected conversions to h:m:s are taken from:
+    https://www.vercalendario.info/en/how/convert-ra-degrees-hours.html
+   */
+  // 80519,21Alp Sco,Alp,Antares,M1Ib + B2.5V,Sco,16.490128,-26.432002,169.7793,1.060,1.865
+  const float antares_ra = 16.490128;
+  HmsCoords antares_expected = { .h = 1, .m = 5, .s = 57.6 };
+  HmsCoords antares_hms = degrees_to_hms(antares_ra);
+  cr_expect(antares_hms.h == antares_expected.h, "Antares RA to hours");
+  cr_expect(antares_hms.m == antares_expected.m, "Antares RA to minutes");
+  cr_expect(antares_hms.s - antares_expected.s < 0.1, "Antares RA to seconds");
+  
+  // 37718,78Bet Gem,Bet,Pollux,K0IIIvar,Gem,7.755277,28.026199,10.3584,1.160,0.991
+  const float pollux_ra = 7.755277;
+  HmsCoords pollux_expected = { .h = 0, .m = 31, .s = 1.2 };
+  HmsCoords pollux_hms = degrees_to_hms(pollux_ra);
+  cr_expect(pollux_hms.h == pollux_expected.h, "Pollux RA to hours");
+  cr_expect(pollux_hms.m == pollux_expected.m, "Pollux RA to minutes");
+  cr_expect(pollux_hms.s - pollux_expected.s < 0.1, "Pollux RA to seconds");
+
+  // 65269,67Alp Vir,Alp,Spica,B1V,Vir,13.419883,-11.161322,76.5697,0.980,-0.235
+  const float spica_ra = 13.419883;
+  HmsCoords spica_expected = { .h = 0, .m = 53, .s = 40.7 };
+  HmsCoords spica_hms = degrees_to_hms(spica_ra);
+  cr_expect(spica_hms.h == spica_expected.h, "Spica RA to hours");
+  cr_expect(spica_hms.m == spica_expected.m, "Spica RA to minutes");
+  cr_expect(spica_hms.s - spica_expected.s < 0.1, "Spica RA to seconds");
+  
+}
+
 
 

@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <math.h>
 
 #ifndef M_PI
   #define M_PI 3.141592653
@@ -16,14 +15,15 @@
 #define deg_to_rad(d) (d * (M_PI / 180))
 
 typedef struct HmsCoords {
-  uint8_t h, m, s;
+  uint8_t h, m;
+  float s;
 } HmsCoords;
 
 void log_hms_coords(FILE *stream,const HmsCoords *hms);
 
 float hms_to_degrees(const HmsCoords *hms);
 
-
+HmsCoords degrees_to_hms(float degrees);
 
 
 
