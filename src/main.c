@@ -12,6 +12,17 @@ int main (void)
   float deg1 = 1.0;
   float rad_deg1 = deg_to_rad(deg1);
   printf("Found %.7f rad for 1 degree\n", rad_deg1);
+
+  HmsCoords hms;
+  hms.h = 12;
+  hms.m = 27;
+  hms.s = 43;
+
+  log_hms_coords(stdout, &hms);
+
+  float hms_deg = hms_to_degrees(&hms);
+
+  printf("12:27:43 => %.2f°\n", hms_deg);
   
   /* const char *cygnus = "Cyg"; */
   /* const float mmag = 4.0; */
