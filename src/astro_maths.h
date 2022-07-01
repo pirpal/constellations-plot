@@ -8,9 +8,9 @@
   #define M_PI 3.141592653
 #endif
 
-#define HOUR_DEG (360.0 / 24.0)
-#define MIN_DEG  (HOUR_DEG / 60.0)
-#define SEC_DEG  (MIN_DEG / 60.0)
+#define HOUR_DEG (360.0 / 24.0)    // 15.0
+#define MIN_DEG  (HOUR_DEG / 60.0) //  0.25
+#define SEC_DEG  (MIN_DEG / 60.0)  // 0.00416666..7
 
 #define deg_to_rad(d) (d * (M_PI / 180))
 

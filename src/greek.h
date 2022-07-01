@@ -7,7 +7,7 @@ typedef enum GreekLetter {
   NU, XI, OMICRON, PI,  RHO, SIGMA,
   TAU, UPSILON, PHI, CHI, PSI, OMEGA
 } GreekLetter;
-#define MAX_LETTER OMEGA // 23 (24 letters)
+#define MAX_LETTER OMEGA // [23] (24 letters)
 
 // Unicode Greek small letters
 #define U_ALPHA   "\U000003b1" // α  A  Keyboard input for Emacs
