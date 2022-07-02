@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+
 //--------------------------------------------------------------
 // Constellations short names
 //--------------------------------------------------------------
@@ -58,10 +59,13 @@ typedef struct Constellation {
 //--------------------------------------------------------------
 bool is_constel_shortname(const char *shortname);
 
-Constellation *new_constellation(const char *shortname);
+Constellation *new_constellation(const char *csvline);
 
 void log_constellation(FILE *stream, const Constellation *con);
 
+Constellation* load_constellations(const char* csvpath);
+
+void log_constels_shorts(FILE* stream);
 
 
 #endif // CONSTELLATIONS_H_

@@ -7,13 +7,6 @@
 #include <stdint.h>
 #include <string.h>
 
-//void err_exit(const char *msg);
-
-//uint16_t count_sep(const char *str, const char sep);
-
-//uint16_t *sep_indexes(const char *str, const char sep);
-
-//uint16_t *tokens_lengths(const char *str, const char sep);
 
 uint16_t tokens_nb(const char *str, const char sep);
 

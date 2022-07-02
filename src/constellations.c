@@ -1,12 +1,9 @@
 #include "constellations.h"
 #include "split_string.h"
+
+#include "mydivutils.h"
+
 #include <stdlib.h>
-
-
-static void err_exit(const char *msg) {
-  fprintf(stderr, "[ERR] %s\n", msg);
-  exit(EXIT_FAILURE);
-}
 
 
 const char* CONSTEL_SHORT_STR[88] = {
@@ -33,31 +30,19 @@ bool is_constel_shortname(const char *shortname) {
 }
 
 
-Constellation *new_constellation(const char *shortname) {
-  if (!is_constel_shortname(shortname))
-    err_exit("new_constellation(): not a constellation short name");
+Constellation *new_constellation(const char* csvline) {
+  char** split = new_split(csvline, SEP);
+  
+  if (!is_constel_shortname(split[IAU_ABBREV]))
+    err_exit("new_constellation", "not a constellation short name");
   Constellation *constel = malloc(sizeof(Constellation));
   if (constel == NULL)
-    err_exit("new_constellation(): failed to malloc Constellation");
-  // search in constellations.csv for constellation data
-  FILE *db = fopen(CONSTELLATIONS_DB_PATH, "r");
-  if (db == NULL)
-    err_exit("new_constellation(): failed to open constellations db");
-  char line[CSV_LINE_MAXCHAR];
-  while (fgets(line, sizeof(line), db)) {
-    char **split = new_split(line, SEP);
-    if (strcmp(shortname, split[IAU_ABBREV]) == 0) {
-      strcpy(constel->shortname, split[IAU_ABBREV]);
-      strcpy(constel->name,      split[CONSTELLATION]);
-      strcpy(constel->genitive,  split[GENITIVE]);
-      strcpy(constel->meaning,   split[MEANING]);
-      free_split(split, CONSTEL_DB_FIELDS_NB);
-      break;
-    }
-    if (split != NULL)
-      free_split(split, CONSTEL_DB_FIELDS_NB);
-  }
-  fclose(db);
+    err_exit("new_constellation", "failed to malloc Constellation");
+  strcpy(constel->shortname, split[IAU_ABBREV]);
+  strcpy(constel->name,      split[CONSTELLATION]);
+  strcpy(constel->genitive,  split[GENITIVE]);
+  strcpy(constel->meaning,   split[MEANING]);
+  free_split(split, CONSTEL_DB_FIELDS_NB);
   return constel;
 }
 
@@ -69,3 +54,57 @@ void log_constellation(FILE *stream, const Constellation *con) {
 	  con->shortname, con->name, con->genitive, con->meaning);
 }
 
+
+char* get_constel_str(const ConstelShort c) {
+  char *str = malloc(4 * sizeof(char));
+  if (str == NULL)
+    err_exit("get_constel_str", "failed to malloc char*");
+  strcpy(str, CONSTEL_SHORT_STR[c]);
+  return str;
+}
+
+
+Constellation* load_constellations(const char* csvpath) {
+  /*
+    TODO: check
+  */
+  FILE* csv = fopen(csvpath, "r");
+  if (csv == NULL)
+    err_exit("load_constellations", "failed to open CSV file");
+
+  Constellation *constels = malloc(CONSTELLATIONS_NB * sizeof(Constellation));
+  if (constels == NULL)
+    err_exit("load_constellations", "failed to malloc Constellation*");
+
+  bool headers_passed = false;
+  char line[CSV_LINE_MAXCHAR];
+  uint8_t constel_count = 0;
+
+  while ((fgets(line, CSV_LINE_MAXCHAR, csv)) != NULL) {
+    if (!headers_passed) {
+      headers_passed = true;
+      continue;
+    } else {
+      constels[constel_count] = *new_constellation(line);
+      constel_count += 1;
+    }
+  }
+  return constels;
+}
+
+void log_constels_shorts(FILE* stream) {
+  fprintf(stream, "\n  ");
+  uint8_t line_max = 79; 
+  uint8_t line_len = 0;
+  for(uint8_t i = 0; i < CONSTELLATIONS_NB; ++i) {
+    if (i == 0)
+      fprintf(stream, "\n  ");
+    line_len += 4; // constel short 'Cyg' + ' '
+    if (line_len > line_max) {
+      fprintf(stream, "\n  ");
+      line_len = 0;
+    }
+    fprintf(stream, "%s ", CONSTEL_SHORT_STR[i]);
+  }
+  fprintf(stream, "\n");
+}

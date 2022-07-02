@@ -49,6 +49,13 @@ typedef struct Star {               // Example (Sirius)
 //----------------------------------------------------------------
 Star* new_star(char **split);
 
+
+// id,    bf,        bayer, proper, spect, con, 
+// 36744, 66Alp Gem, Alp,   Castor, A2Vm,  Gem,
+// ra,       dec,       dist,    mag,   ci
+// 7.576634, 31.888276, 15.5958, 1.580, 0.034
+void print_greek_bayer(FILE* stream, const Star *star);
+
 uint16_t count_stars(const char *con, const float max_mag);
 
 Star** collect_stars(const char *con, const float max_mag);

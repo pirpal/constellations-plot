@@ -23,7 +23,7 @@ void log_hms_coords(FILE *stream,const HmsCoords *hms);
 
 float hms_to_degrees(const HmsCoords *hms);
 
-HmsCoords degrees_to_hms(float degrees);
+HmsCoords* degrees_to_hms(float degrees);
 
 
 

@@ -1,5 +1,7 @@
 #include "astro_maths.h"
+#include "mydivutils.h"
 #include <stdint.h>
+#include <stdlib.h>
 #include <math.h>
 
 //--------------------------------------------------------------
@@ -27,18 +29,19 @@ float deg_to_s(float deg) {
 
 void log_hms_coords(FILE *stream,const HmsCoords *hms) {
   fprintf(stream,
-	 "<HmsCoords %p> %dh %dm %.2fs\n",
-	  (void*) hms, hms->h, hms->m, hms->s);
+	 "%0dh%0dm%.2fs", hms->h, hms->m, hms->s);
 }
 
 float hms_to_degrees(const HmsCoords *hms) {
   return (float) (hms->h * HOUR_DEG + hms->m * MIN_DEG + hms->s * SEC_DEG);
 }
 
-HmsCoords degrees_to_hms(float degrees) {
-  HmsCoords hms;
-  hms.h = deg_to_h(degrees);
-  hms.m = deg_to_m(degrees);
-  hms.s = deg_to_s(degrees);
+HmsCoords* degrees_to_hms(float degrees) {
+  HmsCoords *hms = malloc(sizeof(HmsCoords));
+  if (hms == NULL)
+    err_exit("degrees_to_hms", "failed to malloc HmsCoords*");
+  hms->h = deg_to_h(degrees);
+  hms->m = deg_to_m(degrees);
+  hms->s = deg_to_s(degrees);
   return hms;
 }
