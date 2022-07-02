@@ -94,15 +94,11 @@ Constellation* load_constellations(const char* csvpath) {
 
 void log_constels_shorts(FILE* stream) {
   fprintf(stream, "\n  ");
-  uint8_t line_max = 79; 
-  uint8_t line_len = 0;
   for(uint8_t i = 0; i < CONSTELLATIONS_NB; ++i) {
     if (i == 0)
       fprintf(stream, "\n  ");
-    line_len += 4; // constel short 'Cyg' + ' '
-    if (line_len > line_max) {
+    if (i % 11 == 0) {
       fprintf(stream, "\n  ");
-      line_len = 0;
     }
     fprintf(stream, "%s ", CONSTEL_SHORT_STR[i]);
   }

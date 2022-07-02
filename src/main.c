@@ -33,7 +33,7 @@ int main (void)
   log_constels_shorts(stdout);
 
   char constel_name[CONSTEL_ABBREV_MAXCHAR];
-  printf("  Please enter IAU_ABBREV constellation name:\n");
+  printf("\n  Please enter IAU_ABBREV constellation name:\n");
   printf("  > ");
   fgets(constel_name, 4, stdin);
 
