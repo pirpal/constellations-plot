@@ -4,7 +4,6 @@
 #include "mydivutils.h"
 #include "split_string.h"
 #include "stars.h"
-//#include <stdbool.h>
 
 #define U_BLACK_STAR "\U00002605"  // '★'
 
@@ -15,7 +14,8 @@
 static bool constel_in_line(const char *con, const char *line) {
   /*
      Build a formatted string to surround CON with commas;
-     Return true if pattern ",CON," is found in LINE */
+     Return true if pattern ",CON," is found in line
+  */
   char buf[6]; // 6 = 3 letters for CON + 2 commas + last '\0'
   snprintf(buf, 6, ",%s,", con);
   if (strstr(line, buf))
@@ -47,7 +47,7 @@ static uint16_t get_star_id(const char *str_id) {
   if (has_companion_id(str_id)) {
     char **split = new_split(str_id, ':');
     id = atoi(split[0]);
-    free_split(split, 2);
+    free_split(split);
   } else {
     id = atoi(str_id);
   }
@@ -61,8 +61,7 @@ static uint16_t get_star_id(const char *str_id) {
 Star* new_star(char **split) {
   /*
     Return a pointer to Star* struct dynamically
-    allocated with SPLIT
-
+    allocated with SPLIT strings array
   */
   Star *star = malloc(sizeof(Star));
   if (star == NULL)
@@ -70,11 +69,20 @@ Star* new_star(char **split) {
 
   star->id = get_star_id(split[ID]);
 
-  strcpy(star->bf,     split[BF]);
-  strcpy(star->bayer,  split[BAYER]);
+  strcpy(star->bf, split[BF]);
+  star->bf[strlen(split[BF])] = '\0';
+
+  strcpy(star->bayer, split[BAYER]);
+  star->bayer[strlen(split[BAYER])] = '\0';
+
   strcpy(star->proper, split[PROPER]);
-  strcpy(star->spect,  split[SPECT]);
-  strcpy(star->con,    split[CON]);
+  star->proper[strlen(split[PROPER])] = '\0';
+
+  strcpy(star->spect, split[SPECT]);
+  star->spect[strlen(split[SPECT])] = '\0';
+
+  strcpy(star->con, split[CON]);
+  star->con[strlen(split[CON])] = '\0';
 
   star->ra   = atof(split[RA]);
   star->dec  = atof(split[DEC]);
@@ -103,12 +111,11 @@ uint16_t count_stars(const char *con, const float max_mag) {
       if (mag <= max_mag)
 	count += 1;
     }
-   free_split(split, STARS_DB_FIELDS_NB);
+   free_split(split);
   }
   fclose(db);
   return count;
 }
-
 
 
 Star** collect_stars(const char *con, const float max_mag) {
@@ -145,62 +152,53 @@ Star** collect_stars(const char *con, const float max_mag) {
 	stars[stars_count] = new_star(split);
 	stars_count += 1;
       }
-      free_split(split, STARS_DB_FIELDS_NB);
+      free_split(split);
     }
   }
   fclose(db);
   return stars;
 }
 
-void log_star(FILE *stream, const Star *star) {
-  
-  /* 
-     <Star 0x012abc> 66 Alpha Geminorum, Castor, Gemini
-     RA: 
-     36744,66Alp Gem,Alp,Castor,A2Vm,Gem,7.576634,31.888276,15.5958,1.580,0.034
-  */
+void log_star(FILE *log, const Star *star, const char *genitive) {
   HmsCoords* ra_hms = degrees_to_hms(star->ra);
-  // print greek letter if any (star->bayer)
-  fprintf(stream, "\n\n| Star    | <%p>", (void*) star);
-  fprintf(stream, "\n| id      | %d", star->id);
+  fprintf(log, "\n| Star    | <%p>\n", (void*) star);
+  fprintf(log, "| id      | %d\n", star->id);
 
-  if (strcmp(star->bayer, "") != 0) {
-    uint8_t index = get_letter_index(star->bayer);
-    fprintf(stream,
-	    "\n| bayer   | %s %ld",
-	    star->bayer, U_GREEK_LETTERS[index]);
+  if (strcmp(star->bf, "") != 0) {
+    fprintf(log, "| bf      | %s\n", star->bf);
   }
-  fprintf(stream, "\n| RA      | ");
-  log_hms_coords(stream, ra_hms);
-  fprintf(stream, ", %.5f", star->ra);
+  if (strcmp(star->bayer, "") != 0) {
+    GreekLetter index = get_letter_index(star->bayer);
+    fprintf(log, "| bayer   | %s", GREEK_STR[index]);
+    fprintf(log, " %s\n", genitive);
+  }
+  if (strcmp(star->proper, "") != 0) {
+    fprintf(log, "| proper  | %s\n", star->proper);
+  }
+  fprintf(log, "| RA      | ");
+  log_hms_coords(log, ra_hms);
+  fprintf(log, "\n");
   free(ra_hms);
   ra_hms = NULL;
 
   if (star->dec < 0.0) {
-    fprintf(stream, "\n| dec     | %.5f°", star->dec);
+    fprintf(log, "| dec     | -%.5f°\n", star->dec);
   } else {
-    fprintf(stream, "\n| dec     | +%.5f°", star->dec);
+    fprintf(log, "| dec     | +%.5f°\n", star->dec);
   } 
-
-  fprintf(stream, "\n| dist p  | %.2f parsecs", star->dist);
-  fprintf(stream,
-	  "\n| dist ly | %.2f light years",
-	  star->dist * PARSECS_TO_LY);
-  fprintf(stream, "\n| mag     | %.2f",   star->mag);
-  fprintf(stream, "\n| ci      | %.2f", star->ci);
-  fprintf(stream, "\n| spect   | '%s'",   star->spect);
-  fprintf(stream, "\n");
+  fprintf(log, "| dist p  | %6.2f parsecs\n", star->dist);
+  fprintf(log, "| dist ly | %6.2f light years\n", star->dist * PARSECS_TO_LY);
+  fprintf(log, "| mag     | %.2f\n",   star->mag);
+  fprintf(log, "| ci      | %.2f\n", star->ci);
+  fprintf(log, "| spect   | %s\n",   star->spect);
 }
 
 
-void free_stars(Star** stars_array) {
-  for (size_t i = 0; i < sizeof(stars_array); ++i) {
-    free(stars_array[i]);
+void free_stars(Star **stars) {
+  for (size_t i = 0; i < sizeof(stars); ++i) {
+    free(stars[i]);
   }
-  free(stars_array);
+  free(stars);
 }
 
 
-/* void print_greek_bayer(FILE* stream, const Star *star) { */
-/*     fprintf(stream, ""); */
-/* } */

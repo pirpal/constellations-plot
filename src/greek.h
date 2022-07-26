@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <wchar.h>
 
+#define LETTERS_NB 24
 
 typedef enum GreekLetter {
   ALPHA, BETA,    GAMMA,   DELTA, EPSILON, ZETA,
@@ -12,11 +12,11 @@ typedef enum GreekLetter {
   NU,    XI,      OMICRON, PI,    RHO,     SIGMA,
   TAU,   UPSILON, PHI,     CHI,   PSI,     OMEGA
 } GreekLetter;
-#define MAX_LETTER OMEGA // [23] (24 letters)
 
-extern const wchar_t U_GREEK_LETTERS[24];
+extern const char* GREEK_SHORT_STR[LETTERS_NB];
+extern const char* GREEK_STR[LETTERS_NB];
 
-uint8_t get_letter_index(const char* bayer);
+GreekLetter get_letter_index(const char* bayer);
 
 void print_greek(FILE* stream, const GreekLetter g);
 

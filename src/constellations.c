@@ -31,18 +31,31 @@ bool is_constel_shortname(const char *shortname) {
 
 
 Constellation *new_constellation(const char* csvline) {
+  /*
+    Return pointer to Constellation built with CSVLINE
+  */
   char** split = new_split(csvline, SEP);
   
   if (!is_constel_shortname(split[IAU_ABBREV]))
     err_exit("new_constellation", "not a constellation short name");
+
   Constellation *constel = malloc(sizeof(Constellation));
   if (constel == NULL)
     err_exit("new_constellation", "failed to malloc Constellation");
+
   strcpy(constel->shortname, split[IAU_ABBREV]);
-  strcpy(constel->name,      split[CONSTELLATION]);
-  strcpy(constel->genitive,  split[GENITIVE]);
-  strcpy(constel->meaning,   split[MEANING]);
-  free_split(split, CONSTEL_DB_FIELDS_NB);
+  constel->shortname[strlen(split[IAU_ABBREV])] = '\0';
+
+  strcpy(constel->name, split[CONSTELLATION]);
+  constel->name[strlen(split[CONSTELLATION])] = '\0';
+
+  strcpy(constel->genitive, split[GENITIVE]);
+  constel->genitive[strlen(split[GENITIVE])] = '\0';
+
+  strcpy(constel->meaning, split[MEANING]);
+  constel->meaning[strlen(split[MEANING])] = '\0';
+
+  free_split(split);
   return constel;
 }
 
@@ -64,15 +77,16 @@ char* get_constel_str(const ConstelShort c) {
 }
 
 
-Constellation* load_constellations(const char* csvpath) {
+Constellation** load_constellations(const char* csvpath) {
   /*
-    TODO: check
+    Return array of pointers to Constellation structs
+    built with CSVPATH csv file lines
   */
-  FILE* csv = fopen(csvpath, "r");
+  FILE *csv = fopen(csvpath, "r");
   if (csv == NULL)
     err_exit("load_constellations", "failed to open CSV file");
 
-  Constellation *constels = malloc(CONSTELLATIONS_NB * sizeof(Constellation));
+  Constellation **constels = malloc(CONSTELLATIONS_NB * sizeof(Constellation*));
   if (constels == NULL)
     err_exit("load_constellations", "failed to malloc Constellation*");
 
@@ -85,10 +99,11 @@ Constellation* load_constellations(const char* csvpath) {
       headers_passed = true;
       continue;
     } else {
-      constels[constel_count] = *new_constellation(line);
+      constels[constel_count] = new_constellation(line);
       constel_count += 1;
     }
   }
+  fclose(csv);
   return constels;
 }
 
@@ -103,4 +118,12 @@ void log_constels_shorts(FILE* stream) {
     fprintf(stream, "%s ", CONSTEL_SHORT_STR[i]);
   }
   fprintf(stream, "\n");
+}
+
+
+void free_constellations(Constellation **constels) {
+  for (size_t i = 0; i < sizeof(constels); ++i) {
+    free(constels[i]);
+  }
+  free(constels);
 }

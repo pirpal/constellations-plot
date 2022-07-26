@@ -25,7 +25,6 @@ typedef enum ConstelShort {
 
 #define CONSTELLATIONS_NB 88
 
-// Array of short names defined in constellations.c
 extern const char* CONSTEL_SHORT_STR[CONSTELLATIONS_NB];
 
 //--------------------------------------------------------------
@@ -40,7 +39,7 @@ typedef enum ConstelCsvHeader {
 
 #define CONSTEL_DB_FIELDS_NB 9
 
-#define CONSTEL_MAXCHAR 32
+#define CONSTEL_MAXCHAR 64
 
 
 //--------------------------------------------------------------
@@ -59,13 +58,14 @@ typedef struct Constellation {
 //--------------------------------------------------------------
 bool is_constel_shortname(const char *shortname);
 
-Constellation *new_constellation(const char *csvline);
+Constellation* new_constellation(const char *csvline);
 
 void log_constellation(FILE *stream, const Constellation *con);
 
-Constellation* load_constellations(const char* csvpath);
+Constellation** load_constellations(const char *csvpath);
 
-void log_constels_shorts(FILE* stream);
+void log_constels_shorts(FILE *stream);
 
+void free_constellations(Constellation **constels);
 
 #endif // CONSTELLATIONS_H_

@@ -16,5 +16,6 @@ extern void pchar_n(FILE* stream, const char c, uint8_t n);
 
 extern void err_exit(const char* fname, const char* msg);
 
+extern void print_header(const char *header);
 
 #endif // _MYDIVUTILS_H_
