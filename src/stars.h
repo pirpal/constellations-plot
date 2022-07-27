@@ -55,6 +55,6 @@ Star** collect_stars(const char *con, const float max_mag);
 
 void log_star(FILE *stream, const Star *star, const char *genitive);
 
-void free_stars(Star **stars);
+void free_stars(Star **stars, uint16_t stars_nb);
 
 #endif // STARS_H_

@@ -122,7 +122,7 @@ void log_constels_shorts(FILE* stream) {
 
 
 void free_constellations(Constellation **constels) {
-  for (size_t i = 0; i < sizeof(constels); ++i) {
+  for (int i = 0; i < CONSTELLATIONS_NB; ++i) {
     free(constels[i]);
   }
   free(constels);

@@ -5,8 +5,6 @@
 #include "split_string.h"
 #include "stars.h"
 
-#define U_BLACK_STAR "\U00002605"  // '★'
-
 //--------------------------------------------------------------
 // Static funcitons
 //--------------------------------------------------------------
@@ -26,8 +24,8 @@ static bool constel_in_line(const char *con, const char *line) {
 
 static bool has_companion_id(const char *str_id) {
   /*
-    Multiple stars systems have an id field in CSV db as:
-    ",12345:67890,"
+    Multiple stars systems have an id field in db as:
+    "12345:67890"
     where first id is star's id, and the second one is
     the companion star's id.
     Return true if STR_ID matches this pattern
@@ -103,7 +101,8 @@ uint16_t count_stars(const char *con, const float max_mag) {
   FILE *db = fopen(STARS_DB_PATH, "r");
   if (db == NULL)
     err_exit("count_stars", "failed to open db");
-  char line[CSV_LINE_MAXCHAR];
+ char line[CSV_LINE_MAXCHAR];
+ 
   while (fgets(line, sizeof(line), db)) {
     char **split = new_split(line, SEP);
     if (strcmp(con, split[CON]) == 0) {
@@ -181,11 +180,7 @@ void log_star(FILE *log, const Star *star, const char *genitive) {
   free(ra_hms);
   ra_hms = NULL;
 
-  if (star->dec < 0.0) {
-    fprintf(log, "| dec     | -%.5f°\n", star->dec);
-  } else {
-    fprintf(log, "| dec     | +%.5f°\n", star->dec);
-  } 
+  fprintf(log, "| dec     | %+.5f°\n", star->dec);
   fprintf(log, "| dist p  | %6.2f parsecs\n", star->dist);
   fprintf(log, "| dist ly | %6.2f light years\n", star->dist * PARSECS_TO_LY);
   fprintf(log, "| mag     | %.2f\n",   star->mag);
@@ -194,8 +189,8 @@ void log_star(FILE *log, const Star *star, const char *genitive) {
 }
 
 
-void free_stars(Star **stars) {
-  for (size_t i = 0; i < sizeof(stars); ++i) {
+void free_stars(Star **stars, uint16_t stars_nb) {
+  for (uint16_t i = 0; i < stars_nb; ++i) {
     free(stars[i]);
   }
   free(stars);

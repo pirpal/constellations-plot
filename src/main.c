@@ -60,7 +60,7 @@ int main (void)
     for (uint16_t i = 0; i < stars_nb; ++i) {
       log_star(stars_log, stars[i], selected_const->genitive);
     }
-    free_stars(stars);
+    free_stars(stars, stars_nb);
     printf("Closing stars.log...\n");
     fclose(stars_log);
   } else {
